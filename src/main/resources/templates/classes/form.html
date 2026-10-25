@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Classe')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('classes')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1 th:text="${c.id == null} ? '➕ Nouvelle classe' : '✏️ Modifier la classe'">Classe</h1>
+
+  <div class="card">
+    <form class="fun" method="post" th:action="@{/classes/save}">
+      <input type="hidden" name="id" th:value="${c.id}">
+      <label>Niveau
+        <select name="level" required>
+          <option th:each="l : ${levels}" th:value="${l}" th:text="${l}" th:selected="${l == c.level}">CP</option>
+        </select>
+      </label>
+      <label>Section
+        <input type="text" name="section" th:value="${c.section}" placeholder="A" maxlength="10">
+      </label>
+      <label>Capacité maximale
+        <input type="number" name="capacity" min="1" th:value="${c.capacity}" required>
+      </label>
+      <label>Année scolaire
+        <input type="text" name="anneeScolaire" th:value="${c.anneeScolaire}" placeholder="2026-2027">
+      </label>
+      <label>Enseignant titulaire
+        <select name="teacherId">
+          <option value="">— Aucun —</option>
+          <option th:each="t : ${teachers}" th:value="${t.id}" th:text="${t.fullName}"
+                  th:selected="${c.teacher != null and c.teacher.id == t.id}">Enseignant</option>
+        </select>
+      </label>
+      <div class="actions">
+        <button class="btn" type="submit">💾 Enregistrer</button>
+        <a class="btn ghost" th:href="@{/classes}">Annuler</a>
+      </div>
+    </form>
+  </div>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

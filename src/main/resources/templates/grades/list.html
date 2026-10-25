@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Notes')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('grades')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1>📝 Les notes</h1>
+  <p><a class="btn grape" th:href="@{/grades/new}">⭐ Nouvelle note</a></p>
+
+  <table>
+    <thead><tr><th>Élève</th><th>Matière</th><th>Évaluation</th><th>Trim.</th><th class="right">Note /20</th><th></th></tr></thead>
+    <tbody>
+    <tr th:each="g : ${grades}">
+      <td th:text="${g.student.avatar} + ' ' + ${g.student.fullName}">🦊 Nom</td>
+      <td th:text="${g.subject.name}">Maths</td>
+      <td th:text="${g.title}">Contrôle</td>
+      <td th:text="${g.trimester}">1</td>
+      <td class="right"><b th:text="${#numbers.formatDecimal(g.score, 1, 'WHITESPACE', 2, 'COMMA')}">15,00</b></td>
+      <td>
+        <div class="actions">
+          <a class="btn small sky" th:href="@{/grades/{id}/edit(id=${g.id})}">✏️</a>
+          <form class="inline" method="post" th:action="@{/grades/{id}/delete(id=${g.id})}"
+                onsubmit="return confirm('Supprimer cette note ?')">
+            <button class="btn small coral" type="submit">🗑️</button>
+          </form>
+        </div>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(grades)}"><td colspan="6" class="muted">Aucune note saisie.</td></tr>
+    </tbody>
+  </table>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Bulletin')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('students')}"></nav>
+<main class="wrap">
+  <div class="paper">
+    <h1>📄 Bulletin scolaire</h1>
+    <p style="text-align:center" th:text="'Année scolaire ' + ${annee}">Année</p>
+
+    <p><b>Élève :</b> <span th:text="${s.avatar} + ' ' + ${s.fullName}">🦊 Nom</span><br>
+       <b>Classe :</b> <span th:text="${s.schoolClass != null} ? ${s.schoolClass.label} : '—'">CE1 A</span></p>
+
+    <table>
+      <thead><tr><th>Matière</th><th>Coef.</th><th>Notes</th><th class="right">Moyenne /20</th></tr></thead>
+      <tbody>
+      <tr th:each="r : ${progress.rows}">
+        <td th:text="${r.subject.name}">Maths</td>
+        <td th:text="${#numbers.formatDecimal(r.subject.coefficient, 1, 0)}">3</td>
+        <td th:text="${r.count}">2</td>
+        <td class="right"><b th:text="${#numbers.formatDecimal(r.average, 1, 'WHITESPACE', 2, 'COMMA')}">15,00</b></td>
+      </tr>
+      <tr th:if="${#lists.isEmpty(progress.rows)}"><td colspan="4" class="muted">Aucune note pour le moment.</td></tr>
+      </tbody>
+    </table>
+
+    <p class="right" th:if="${progress.average != null}">
+      Moyenne générale (avec coefficients) :
+      <span class="big-num" th:text="${#numbers.formatDecimal(progress.average, 1, 'WHITESPACE', 2, 'COMMA')} + ' / 20'">15 / 20</span>
+    </p>
+
+    <div class="stars" style="text-align:center">
+      <span th:each="i : ${#numbers.sequence(1, 3)}" th:class="${i <= progress.stars} ? 'on' : 'off'">⭐</span>
+    </div>
+
+    <h2>Détail des évaluations</h2>
+    <table>
+      <thead><tr><th>Matière</th><th>Évaluation</th><th>Trim.</th><th class="right">Note</th></tr></thead>
+      <tbody>
+      <tr th:each="g : ${progress.grades}">
+        <td th:text="${g.subject.name}">Maths</td>
+        <td th:text="${g.title}">Contrôle</td>
+        <td th:text="${g.trimester}">1</td>
+        <td class="right" th:text="${#numbers.formatDecimal(g.score, 1, 'WHITESPACE', 2, 'COMMA')}">15,00</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="actions no-print" style="justify-content:center;margin-top:18px">
+    <button class="btn sky" type="button" onclick="window.print()">🖨️ Imprimer / PDF</button>
+    <a class="btn ghost" th:href="@{/students/{id}(id=${s.id})}">Retour à la fiche</a>
+  </div>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

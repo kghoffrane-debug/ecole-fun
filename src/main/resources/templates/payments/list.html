@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Paiements')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('payments')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1>💰 Les paiements</h1>
+  <p><a class="btn sun" th:href="@{/payments/new}">➕ Encaisser un paiement</a></p>
+
+  <h2>⏰ Impayés</h2>
+  <table>
+    <thead><tr><th>Élève</th><th>Dû</th><th>Payé</th><th>Reste</th><th></th></tr></thead>
+    <tbody>
+    <tr th:each="d : ${debts}">
+      <td th:text="${d.student.avatar} + ' ' + ${d.student.fullName}">🦊 Nom</td>
+      <td th:text="${d.due} + ' DT'">1200 DT</td>
+      <td th:text="${d.paid} + ' DT'">400 DT</td>
+      <td><span class="pill-due" th:text="${d.balance} + ' DT'">800 DT</span></td>
+      <td>
+        <div class="actions">
+          <a class="btn small sun" th:href="@{/payments/new(studentId=${d.student.id})}">💰 Encaisser</a>
+          <form class="inline" method="post" th:action="@{/payments/remind/{id}(id=${d.student.id})}">
+            <button class="btn small sky" type="submit">💌 Relancer</button>
+          </form>
+        </div>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(debts)}"><td colspan="5">Aucun impayé, bravo ! 🎉</td></tr>
+    </tbody>
+  </table>
+
+  <h2>🧾 Historique des paiements</h2>
+  <table>
+    <thead><tr><th>Date</th><th>Élève</th><th>Montant</th><th>Mode</th><th>Reçu</th><th></th></tr></thead>
+    <tbody>
+    <tr th:each="p : ${payments}">
+      <td th:text="${#temporals.format(p.paidAt, 'dd/MM/yyyy')}">01/01/2026</td>
+      <td th:text="${p.student.fullName}">Nom</td>
+      <td><b th:text="${p.amount} + ' DT'">100 DT</b></td>
+      <td th:text="${p.method.label}">Espèces</td>
+      <td><a th:href="@{/payments/{id}/receipt(id=${p.id})}" th:text="${p.receiptNumber}">R-2026-00001</a></td>
+      <td>
+        <div class="actions">
+          <a class="btn small sky" th:href="@{/payments/{id}/edit(id=${p.id})}">✏️</a>
+          <form class="inline" method="post" th:action="@{/payments/{id}/delete(id=${p.id})}"
+                onsubmit="return confirm('Annuler ce paiement ?')">
+            <button class="btn small coral" type="submit">🗑️</button>
+          </form>
+        </div>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(payments)}"><td colspan="6" class="muted">Aucun paiement enregistré.</td></tr>
+    </tbody>
+  </table>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Comptes')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('users')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1>👥 Les comptes</h1>
+  <p class="muted">Enseignants, parents, élèves, comptables : tous les accès à l'application.</p>
+  <p><a class="btn sun" th:href="@{/users/new}">➕ Nouveau compte</a></p>
+
+  <table>
+    <thead><tr><th>Nom</th><th>Identifiant</th><th>Rôle</th><th>E-mail</th><th></th></tr></thead>
+    <tbody>
+    <tr th:each="u : ${users}">
+      <td><b th:text="${u.fullName}">Nom</b></td>
+      <td th:text="${u.username}">login</td>
+      <td th:text="${u.role.label}">Parent</td>
+      <td th:text="${u.email != null} ? ${u.email} : '—'">—</td>
+      <td>
+        <div class="actions">
+          <a class="btn small sky" th:href="@{/users/{id}/edit(id=${u.id})}">✏️ Modifier</a>
+          <form class="inline" method="post" th:action="@{/users/{id}/delete(id=${u.id})}"
+                onsubmit="return confirm('Supprimer ce compte ?')">
+            <button class="btn small coral" type="submit">🗑️</button>
+          </form>
+        </div>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

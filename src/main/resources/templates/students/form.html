@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Dossier élève')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('students')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1 th:text="${s.id == null} ? '➕ Nouvel élève' : '✏️ Modifier l\'élève'">Élève</h1>
+
+  <div class="card">
+    <form class="fun" method="post" th:action="@{/students/save}">
+      <input type="hidden" name="id" th:value="${s.id}">
+
+      <div>
+        <b>Choisis un avatar</b>
+        <div class="avatar-pick">
+          <label th:each="a : ${avatars}">
+            <input type="radio" name="avatar" th:value="${a}" th:checked="${a == s.avatar}">
+            <span th:text="${a}">🦊</span>
+          </label>
+        </div>
+      </div>
+
+      <label>Prénom
+        <input type="text" name="firstName" th:value="${s.firstName}" required>
+      </label>
+      <label>Nom
+        <input type="text" name="lastName" th:value="${s.lastName}" required>
+      </label>
+      <label>Date de naissance
+        <input type="date" name="birthDate" th:value="${s.birthDate}">
+      </label>
+      <label>Classe
+        <select name="classId">
+          <option value="">— Aucune —</option>
+          <option th:each="c : ${classes}" th:value="${c.id}" th:text="${c.label}"
+                  th:selected="${s.schoolClass != null and s.schoolClass.id == c.id}">CE1 A</option>
+        </select>
+      </label>
+      <label>Parent / tuteur (compte)
+        <select name="parentId">
+          <option value="">— Aucun —</option>
+          <option th:each="p : ${parents}" th:value="${p.id}" th:text="${p.fullName}"
+                  th:selected="${s.parent != null and s.parent.id == p.id}">Parent</option>
+        </select>
+      </label>
+      <label>Compte de connexion de l'élève (optionnel)
+        <select name="userId">
+          <option value="">— Aucun —</option>
+          <option th:each="u : ${pupils}" th:value="${u.id}" th:text="${u.fullName}"
+                  th:selected="${s.user != null and s.user.id == u.id}">Élève</option>
+        </select>
+      </label>
+      <label>Scolarité annuelle à payer (DT)
+        <input type="number" name="tuitionDue" step="0.01" min="0" th:value="${s.tuitionDue}" required>
+      </label>
+      <label>Remarques médicales
+        <textarea name="medicalNotes" style="min-height:90px" th:text="${s.medicalNotes}"></textarea>
+      </label>
+
+      <div class="actions">
+        <button class="btn" type="submit">💾 Enregistrer</button>
+        <a class="btn ghost" th:href="@{/students}">Annuler</a>
+      </div>
+    </form>
+  </div>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

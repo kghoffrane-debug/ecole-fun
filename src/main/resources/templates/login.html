@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Connexion')}"></head>
+<body>
+<div class="login-wrap">
+  <div class="card login-card">
+    <div class="mascot" title="Clique-moi !">🦉</div>
+    <h1>École Fun</h1>
+    <p>Bienvenue ! Connecte-toi pour commencer l'aventure 🚀</p>
+
+    <div class="flash err" th:if="${param.error}">Oups, identifiant ou mot de passe incorrect.</div>
+    <div class="flash ok" th:if="${param.logout}">À bientôt ! 👋</div>
+
+    <form th:action="@{/login}" method="post">
+      <label>Identifiant
+        <input type="text" name="username" autocomplete="username" required autofocus>
+      </label>
+      <label>Mot de passe
+        <input type="password" name="password" autocomplete="current-password" required>
+      </label>
+      <button class="btn sky" type="submit">C'est parti ! 🎈</button>
+    </form>
+
+    <div class="hint" th:if="${demo}">
+      <b>Comptes de démonstration</b><br>
+      admin / admin123 · enseignant / ens123<br>
+      parent / parent123 · compta / compta123 · eleve / eleve123
+    </div>
+  </div>
+</div>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

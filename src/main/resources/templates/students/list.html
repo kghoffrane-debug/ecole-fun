@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+<head th:replace="~{fragments :: head('Élèves')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('students')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1>🧒 Les élèves</h1>
+
+  <div class="card">
+    <form method="get" th:action="@{/students}" class="actions">
+      <input type="text" name="q" th:value="${q}" placeholder="Chercher un élève…" style="max-width:280px">
+      <button class="btn sky" type="submit">🔍 Chercher</button>
+      <a class="btn sun" sec:authorize="hasAnyRole('ADMIN','ACCOUNTANT')" th:href="@{/students/new}">➕ Nouvel élève</a>
+    </form>
+  </div>
+
+  <table>
+    <thead><tr><th></th><th>Nom</th><th>Classe</th><th>Parent</th><th></th></tr></thead>
+    <tbody>
+    <tr th:each="s : ${students}">
+      <td class="avatar" th:text="${s.avatar}">🦊</td>
+      <td><a th:href="@{/students/{id}(id=${s.id})}" th:text="${s.fullName}">Nom</a></td>
+      <td th:text="${s.schoolClass != null} ? ${s.schoolClass.label} : '—'">CE1 A</td>
+      <td th:text="${s.parent != null} ? ${s.parent.fullName} : '—'">Parent</td>
+      <td>
+        <div class="actions">
+          <a class="btn small sun" th:href="@{/students/{id}/bulletin(id=${s.id})}">📄 Bulletin</a>
+          <a class="btn small sky" sec:authorize="hasAnyRole('ADMIN','ACCOUNTANT')"
+             th:href="@{/students/{id}/edit(id=${s.id})}">✏️ Modifier</a>
+          <form class="inline" sec:authorize="hasRole('ADMIN')" method="post"
+                th:action="@{/students/{id}/delete(id=${s.id})}"
+                onsubmit="return confirm('Archiver ce dossier élève ?')">
+            <button class="btn small coral" type="submit">🗑️</button>
+          </form>
+        </div>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(students)}"><td colspan="5" class="muted">Aucun élève trouvé 🕵️</td></tr>
+    </tbody>
+  </table>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>
