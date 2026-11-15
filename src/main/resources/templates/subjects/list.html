@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+<head th:replace="~{fragments :: head('Matières')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('subjects')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1>📚 Les matières</h1>
+  <p><a class="btn sun" sec:authorize="hasRole('ADMIN')" th:href="@{/subjects/new}">➕ Nouvelle matière</a></p>
+
+  <table>
+    <thead><tr><th>Matière</th><th>Coefficient</th><th>Niveau</th><th>Enseignant</th><th></th></tr></thead>
+    <tbody>
+    <tr th:each="s : ${subjects}">
+      <td><b th:text="${s.name}">Maths</b></td>
+      <td th:text="${#numbers.formatDecimal(s.coefficient, 1, 1)}">3,0</td>
+      <td th:text="${s.level}">Tous</td>
+      <td th:text="${s.teacher != null} ? ${s.teacher.fullName} : '—'">M. Karim</td>
+      <td sec:authorize="hasRole('ADMIN')">
+        <div class="actions">
+          <a class="btn small sky" th:href="@{/subjects/{id}/edit(id=${s.id})}">✏️ Modifier</a>
+          <form class="inline" method="post" th:action="@{/subjects/{id}/delete(id=${s.id})}"
+                onsubmit="return confirm('Supprimer cette matière ?')">
+            <button class="btn small coral" type="submit">🗑️</button>
+          </form>
+        </div>
+      </td>
+      <td sec:authorize="!hasRole('ADMIN')"></td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(subjects)}"><td colspan="5" class="muted">Aucune matière pour le moment.</td></tr>
+    </tbody>
+  </table>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

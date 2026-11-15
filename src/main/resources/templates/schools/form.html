@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('École')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('schools')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1 th:text="${s.id == null} ? '➕ Nouvelle école' : '✏️ Modifier l\'école'">École</h1>
+
+  <div class="card">
+    <form class="fun" method="post" th:action="@{/schools/save}" autocomplete="off">
+      <input type="hidden" name="id" th:value="${s.id}">
+      <label>Nom de l'école
+        <input type="text" name="name" th:value="${s.name}" required>
+      </label>
+      <label>Statut
+        <select name="status">
+          <option th:each="st : ${statuses}" th:value="${st}" th:text="${st}" th:selected="${st == s.status}">ACTIVE</option>
+        </select>
+      </label>
+      <label>Offre
+        <select name="plan">
+          <option th:each="pl : ${plans}" th:value="${pl}" th:text="${pl}" th:selected="${pl == s.plan}">basic</option>
+        </select>
+      </label>
+      <label>Fin de l'abonnement (facultatif)
+        <input type="date" name="subscriptionEnd" th:value="${s.subscriptionEnd}">
+      </label>
+
+      <div th:if="${s.id == null}" class="card" style="margin:0">
+        <h2 style="margin-top:0">👩‍💼 Directeur de l'école</h2>
+        <p class="muted">Ce compte permettra à l'école de créer ses propres enseignants, parents et élèves.</p>
+        <label>Nom complet
+          <input type="text" name="directorName" required>
+        </label>
+        <label>Identifiant (unique dans toute la base)
+          <input type="text" name="directorUsername" required>
+        </label>
+        <label>Mot de passe (6 caractères min.)
+          <input type="password" name="directorPassword" minlength="6" autocomplete="new-password" required>
+        </label>
+      </div>
+
+      <div class="actions">
+        <button class="btn" type="submit">💾 Enregistrer</button>
+        <a class="btn ghost" th:href="@{/schools}">Annuler</a>
+      </div>
+    </form>
+  </div>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

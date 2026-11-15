@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Messages')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('messages')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1>💌 Messagerie</h1>
+
+  <div class="tabs">
+    <a class="tab" th:classappend="${tab == 'inbox'} ? 'on'" th:href="@{/messages}">📥 Reçus</a>
+    <a class="tab" th:classappend="${tab == 'sent'} ? 'on'" th:href="@{/messages/sent}">📤 Envoyés</a>
+    <a class="tab" th:classappend="${tab == 'drafts'} ? 'on'" th:href="@{/messages/drafts}">📝 Brouillons</a>
+    <a class="btn sky" th:href="@{/messages/compose}">✏️ Nouveau message</a>
+  </div>
+
+  <table>
+    <thead>
+    <tr>
+      <th th:text="${tab == 'inbox'} ? 'De' : 'À'">De</th>
+      <th>Objet</th>
+      <th>Date</th>
+      <th></th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="m : ${messages}" th:classappend="${tab == 'inbox' and !m.readByRecipient} ? 'unread'">
+      <td th:text="${tab == 'inbox'} ? ${m.sender.fullName} : ${m.recipient.fullName}">Nom</td>
+      <td>
+        <a th:if="${tab != 'drafts'}" th:href="@{/messages/{id}(id=${m.id})}" th:text="${m.subject}">Objet</a>
+        <a th:if="${tab == 'drafts'}" th:href="@{/messages/{id}/edit(id=${m.id})}" th:text="${m.subject}">Objet</a>
+      </td>
+      <td th:text="${m.sentAt != null} ? ${#temporals.format(m.sentAt, 'dd/MM/yyyy HH:mm')} : 'Brouillon'">01/01/2026</td>
+      <td>
+        <form class="inline" th:if="${tab == 'drafts'}" method="post"
+              th:action="@{/messages/{id}/delete-draft(id=${m.id})}"
+              onsubmit="return confirm('Supprimer ce brouillon ?')">
+          <button class="btn small coral" type="submit">🗑️</button>
+        </form>
+        <form class="inline" th:if="${tab == 'inbox'}" method="post"
+              th:action="@{/messages/{id}/hide(id=${m.id})}"
+              onsubmit="return confirm('Masquer ce message de votre boîte ?')">
+          <button class="btn small ghost" type="submit">🙈 Masquer</button>
+        </form>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(messages)}"><td colspan="4" class="muted">Rien ici pour le moment 🕊️</td></tr>
+    </tbody>
+  </table>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

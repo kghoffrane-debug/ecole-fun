@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Matière')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('subjects')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1 th:text="${s.id == null} ? '➕ Nouvelle matière' : '✏️ Modifier la matière'">Matière</h1>
+
+  <div class="card">
+    <form class="fun" method="post" th:action="@{/subjects/save}">
+      <input type="hidden" name="id" th:value="${s.id}">
+      <label>Nom
+        <input type="text" name="name" th:value="${s.name}" required>
+      </label>
+      <label>Coefficient
+        <input type="number" name="coefficient" step="0.5" min="0.5" th:value="${s.coefficient}" required>
+      </label>
+      <label>Niveau concerné
+        <select name="level">
+          <option th:each="l : ${levels}" th:value="${l}" th:text="${l}" th:selected="${l == s.level}">Tous</option>
+        </select>
+      </label>
+      <label>Enseignant
+        <select name="teacherId">
+          <option value="">— Aucun —</option>
+          <option th:each="t : ${teachers}" th:value="${t.id}" th:text="${t.fullName}"
+                  th:selected="${s.teacher != null and s.teacher.id == t.id}">Enseignant</option>
+        </select>
+      </label>
+      <div class="actions">
+        <button class="btn" type="submit">💾 Enregistrer</button>
+        <a class="btn ghost" th:href="@{/subjects}">Annuler</a>
+      </div>
+    </form>
+  </div>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

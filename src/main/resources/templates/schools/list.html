@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Écoles')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('schools')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+
+  <section class="hero" style="background:var(--grape)">
+    <div class="mascot">🏢</div>
+    <div>
+      <h1>Espace propriétaire du SaaS</h1>
+      <p>Vous gérez les écoles clientes. Les données internes de chaque école (élèves, notes, paiements…) restent invisibles pour vous.</p>
+    </div>
+  </section>
+
+  <p><a class="btn sun" th:href="@{/schools/new}">➕ Créer une école</a></p>
+
+  <table>
+    <thead><tr><th>École</th><th>Statut</th><th>Offre</th><th>Fin d'abonnement</th><th>Élèves</th><th></th></tr></thead>
+    <tbody>
+    <tr th:each="s : ${schools}">
+      <td><b th:text="${s.name}">École</b></td>
+      <td>
+        <span th:class="${s.blocked} ? 'pill-due' : 'pill-ok'"
+              th:text="${s.status == 'ACTIVE'} ? 'Active ✅' : (${s.status == 'TRIAL'} ? 'Essai 🧪' : 'Suspendue ⛔')">Active</span>
+        <span class="muted" th:if="${s.blocked and s.status != 'SUSPENDED'}"> (abonnement terminé)</span>
+      </td>
+      <td th:text="${s.plan}">basic</td>
+      <td th:text="${s.subscriptionEnd != null} ? ${#temporals.format(s.subscriptionEnd, 'dd/MM/yyyy')} : '—'">—</td>
+      <td th:text="${counts[s.id]}">0</td>
+      <td>
+        <div class="actions">
+          <a class="btn small sky" th:href="@{/schools/{id}/edit(id=${s.id})}">✏️ Modifier</a>
+          <form class="inline" method="post" th:action="@{/schools/{id}/toggle(id=${s.id})}">
+            <button class="btn small sun" type="submit"
+                    th:text="${s.status == 'SUSPENDED'} ? '▶️ Réactiver' : '⏸️ Suspendre'">Suspendre</button>
+          </form>
+          <form class="inline" method="post" th:action="@{/schools/{id}/delete(id=${s.id})}"
+                onsubmit="return confirm('Archiver cette école ? Ses comptes ne pourront plus se connecter.')">
+            <button class="btn small coral" type="submit">🗑️</button>
+          </form>
+        </div>
+      </td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(schools)}"><td colspan="6" class="muted">Aucune école pour le moment.</td></tr>
+    </tbody>
+  </table>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

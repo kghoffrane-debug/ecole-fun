@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Paiement')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('payments')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1 th:text="${p.id == null} ? '💰 Encaisser un paiement' : '✏️ Modifier le paiement'">Paiement</h1>
+  <p class="muted" th:if="${p.id == null}">Un reçu sera créé et le parent recevra automatiquement un message avec le nouveau solde. 💌</p>
+
+  <div class="card">
+    <form class="fun" method="post" th:action="@{/payments/save}">
+      <input type="hidden" name="id" th:value="${p.id}">
+      <label>Élève
+        <select name="studentId" required>
+          <option th:each="s : ${students}" th:value="${s.id}" th:text="${s.avatar} + ' ' + ${s.fullName}"
+                  th:selected="${p.student != null and p.student.id == s.id}">Élève</option>
+        </select>
+      </label>
+      <label>Montant (DT)
+        <input type="number" name="amount" step="0.01" min="0.01" th:value="${p.amount}" required>
+      </label>
+      <label>Mode de paiement
+        <select name="method" required>
+          <option th:each="m : ${methods}" th:value="${m}" th:text="${m.label}" th:selected="${m == p.method}">Espèces</option>
+        </select>
+      </label>
+      <label>Date
+        <input type="date" name="paidAt" th:value="${p.paidAt}" required>
+      </label>
+      <div class="actions">
+        <button class="btn" type="submit">💾 Enregistrer</button>
+        <a class="btn ghost" th:href="@{/payments}">Annuler</a>
+      </div>
+    </form>
+  </div>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

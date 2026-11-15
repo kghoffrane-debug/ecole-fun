@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Message')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('messages')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+
+  <div class="card">
+    <h1 th:text="${msg.subject}">Objet</h1>
+    <p class="muted">
+      De <b th:text="${msg.sender.fullName}">Expéditeur</b>
+      à <b th:text="${msg.recipient.fullName}">Destinataire</b>
+      · <span th:text="${#temporals.format(msg.sentAt, 'dd/MM/yyyy HH:mm')}">01/01/2026 10:00</span>
+    </p>
+    <p><span class="sealed">🔒 Message scellé : il ne peut plus être modifié</span></p>
+
+    <div class="msg-body" th:text="${msg.body}">Texte</div>
+
+    <p th:if="${msg.linkUrl != null}" style="margin-top:18px">
+      <a class="btn sun" th:href="@{${msg.linkUrl}}" th:text="${msg.linkLabel}">Ouvrir</a>
+    </p>
+
+    <div class="actions" style="margin-top:18px">
+      <a class="btn sky" th:href="@{/messages/compose(to=${isRecipient ? msg.sender.id : msg.recipient.id}, subject=${'Re: ' + msg.subject})}">↩️ Répondre</a>
+      <form class="inline" th:if="${isRecipient}" method="post" th:action="@{/messages/{id}/hide(id=${msg.id})}"
+            onsubmit="return confirm('Masquer ce message de votre boîte ?')">
+        <button class="btn ghost" type="submit">🙈 Masquer</button>
+      </form>
+      <a class="btn ghost" th:href="@{/messages}">Retour</a>
+    </div>
+  </div>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

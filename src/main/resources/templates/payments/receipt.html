@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Reçu')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('payments')}"></nav>
+<main class="wrap">
+  <div class="paper">
+    <h1>🧾 Reçu de paiement</h1>
+    <p style="text-align:center"><b th:text="${p.receiptNumber}">R-2026-00001</b></p>
+
+    <table>
+      <tr><td>Élève</td><td th:text="${p.student.fullName}">Nom</td></tr>
+      <tr><td>Classe</td><td th:text="${p.student.schoolClass != null} ? ${p.student.schoolClass.label} : '—'">CE1 A</td></tr>
+      <tr><td>Date</td><td th:text="${#temporals.format(p.paidAt, 'dd/MM/yyyy')}">01/01/2026</td></tr>
+      <tr><td>Mode de paiement</td><td th:text="${p.method.label}">Espèces</td></tr>
+      <tr><td>Année scolaire</td><td th:text="${p.anneeScolaire}">2026-2027</td></tr>
+      <tr><td><b>Montant payé</b></td><td><b class="big-num" th:text="${p.amount} + ' DT'">100 DT</b></td></tr>
+      <tr><td>Solde restant</td><td th:text="${balance} + ' DT'">800 DT</td></tr>
+    </table>
+    <p style="text-align:center">Merci pour votre confiance ! 🌟</p>
+  </div>
+  <div class="actions no-print" style="justify-content:center;margin-top:18px">
+    <button class="btn sky" type="button" onclick="window.print()">🖨️ Imprimer / Enregistrer en PDF</button>
+    <a class="btn ghost" th:href="@{/}">Retour</a>
+  </div>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

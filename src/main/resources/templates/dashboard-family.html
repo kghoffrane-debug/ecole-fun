@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+<head th:replace="~{fragments :: head('Accueil')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('home')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+
+  <section class="hero">
+    <div class="mascot" title="Clique-moi !">🦉</div>
+    <div>
+      <h1>Coucou <span th:text="${me.fullName}">Prénom</span> !</h1>
+      <p sec:authorize="hasRole('PARENT')">Voici les aventures scolaires de vos enfants ✨</p>
+      <p sec:authorize="hasRole('STUDENT')">Voici tes étoiles et tes badges, continue comme ça ! 🚀</p>
+    </div>
+  </section>
+
+  <div class="card" th:if="${#lists.isEmpty(cards)}">
+    <p>Aucun élève n'est encore rattaché à ce compte. Contactez l'administration 🏫</p>
+  </div>
+
+  <section class="grid cols2">
+    <article class="card child-card" th:each="c : ${cards}">
+      <span class="avatar" th:text="${c.student.avatar}">🦊</span>
+      <h2 th:text="${c.student.fullName}">Nom</h2>
+      <p class="muted" th:text="${c.student.schoolClass != null} ? ${c.student.schoolClass.label} : 'Sans classe'">CE1 A</p>
+
+      <div class="stars" aria-label="Étoiles">
+        <span th:each="i : ${#numbers.sequence(1, 3)}" th:class="${i <= c.progress.stars} ? 'on' : 'off'">⭐</span>
+      </div>
+
+      <p th:if="${c.progress.average != null}">
+        Moyenne générale<br>
+        <span class="big-num" th:text="${#numbers.formatDecimal(c.progress.average, 1, 'WHITESPACE', 2, 'COMMA')} + ' / 20'">15,00 / 20</span>
+      </p>
+      <p class="muted" th:if="${c.progress.average == null}">Pas encore de note, ça arrive bientôt !</p>
+
+      <div class="chips" style="justify-content:center">
+        <span class="chip" th:each="b : ${c.progress.badges}" th:text="${b}">🌟 Badge</span>
+      </div>
+
+      <p style="margin-top:14px">
+        <span th:if="${c.balance.signum() > 0}" class="pill-due"
+              th:text="'Solde restant : ' + ${#numbers.formatDecimal(c.balance, 1, 'WHITESPACE', 2, 'COMMA')} + ' DT'">Solde</span>
+        <span th:unless="${c.balance.signum() > 0}" class="pill-ok">Tout est réglé 🎉</span>
+      </p>
+
+      <div class="actions" style="justify-content:center">
+        <a class="btn sky" th:href="@{/students/{id}(id=${c.student.id})}">Voir la fiche</a>
+        <a class="btn sun" th:href="@{/students/{id}/bulletin(id=${c.student.id})}">📄 Bulletin</a>
+      </div>
+    </article>
+  </section>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

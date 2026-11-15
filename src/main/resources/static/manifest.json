@@ -1,0 +1,12 @@
+{
+  "name": "École Fun",
+  "short_name": "École Fun",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fff8e7",
+  "theme_color": "#4d96ff",
+  "lang": "fr",
+  "icons": [
+    { "src": "/img/owl.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

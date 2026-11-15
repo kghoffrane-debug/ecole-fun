@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Nouveau message')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('messages')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1>✏️ Écrire un message</h1>
+  <p class="muted">Attention : une fois envoyé, un message ne peut plus être modifié ni supprimé. Tu peux l'enregistrer en brouillon pour y revenir. 🔒</p>
+
+  <div class="card">
+    <form class="fun" method="post" th:action="@{/messages/send}">
+      <input type="hidden" name="draftId" th:value="${draft.id}">
+      <label>Destinataire
+        <select name="to" required>
+          <option value="" disabled th:selected="${preselect == ''}">— Choisir —</option>
+          <option th:if="${canBroadcast}" value="all-parents">📢 Tous les parents</option>
+          <option th:each="r : ${recipients}" th:value="${r.id}"
+                  th:text="${r.fullName} + ' (' + ${r.role.label} + ')'"
+                  th:selected="${preselect == #strings.toString(r.id)}">Nom</option>
+        </select>
+      </label>
+      <label>Objet
+        <input type="text" name="subject" th:value="${draft.subject}" maxlength="200" required>
+      </label>
+      <label>Message
+        <textarea name="body" maxlength="4000" required th:text="${draft.body}"></textarea>
+      </label>
+      <div class="actions">
+        <button class="btn" type="submit" name="action" value="send">🚀 Envoyer</button>
+        <button class="btn sun" type="submit" name="action" value="draft" formnovalidate>📝 Enregistrer en brouillon</button>
+        <a class="btn ghost" th:href="@{/messages}">Annuler</a>
+      </div>
+    </form>
+  </div>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

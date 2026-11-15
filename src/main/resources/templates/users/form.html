@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Compte')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('users')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1 th:text="${u.id == null} ? '➕ Nouveau compte' : '✏️ Modifier le compte'">Compte</h1>
+
+  <div class="card">
+    <form class="fun" method="post" th:action="@{/users/save}" autocomplete="off">
+      <input type="hidden" name="id" th:value="${u.id}">
+      <label>Nom complet
+        <input type="text" name="fullName" th:value="${u.fullName}" required>
+      </label>
+      <label>Identifiant
+        <input type="text" name="username" th:value="${u.username}" th:readonly="${u.id != null}" required>
+      </label>
+      <label>E-mail
+        <input type="email" name="email" th:value="${u.email}">
+      </label>
+      <label>Rôle
+        <select name="role" required>
+          <option th:each="r : ${roles}" th:value="${r}" th:text="${r.label}" th:selected="${r == u.role}">Parent</option>
+        </select>
+      </label>
+      <label th:text="${u.id == null} ? 'Mot de passe (6 caractères min.)' : 'Nouveau mot de passe (laisser vide pour ne pas changer)'">
+        Mot de passe
+      </label>
+      <input type="password" name="password" autocomplete="new-password" th:required="${u.id == null}" minlength="6">
+      <div class="actions">
+        <button class="btn" type="submit">💾 Enregistrer</button>
+        <a class="btn ghost" th:href="@{/users}">Annuler</a>
+      </div>
+    </form>
+  </div>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>
