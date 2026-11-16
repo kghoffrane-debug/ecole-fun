@@ -2,6 +2,7 @@ package tn.ecole.fun.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -19,6 +20,13 @@ public class SecurityConfig {
                 .requestMatchers("/css/**", "/js/**", "/img/**", "/login", "/manifest.json", "/sw.js").permitAll()
                 // Le propriétaire du SaaS gère les écoles, et seulement cela.
                 .requestMatchers("/schools/**").hasRole("SUPER_ADMIN")
+                .requestMatchers(HttpMethod.GET, "/homework/new", "/homework/*/edit",
+                        "/assessments/new", "/assessments/*/edit")
+                    .hasAnyRole("ADMIN", "TEACHER")
+                .requestMatchers(HttpMethod.POST, "/homework/**", "/assessments/**")
+                    .hasAnyRole("ADMIN", "TEACHER")
+                .requestMatchers("/homework/**", "/assessments/**", "/calendar", "/calendar/**")
+                    .hasAnyRole("ADMIN", "TEACHER", "STUDENT", "PARENT")
                 // Les données d'une école ne sont jamais accessibles au propriétaire ni sans école.
                 .requestMatchers("/students/**", "/classes/**", "/subjects/**", "/grades/**",
                         "/payments/**", "/messages/**", "/users/**")

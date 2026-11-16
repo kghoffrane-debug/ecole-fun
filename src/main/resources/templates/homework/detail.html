@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+<head th:replace="~{fragments :: head('Devoir')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('homework')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <section class="hero" style="background:var(--sun);color:var(--ink)">
+    <div class="mascot">📚</div>
+    <div>
+      <h1 th:text="${h.title}">Titre du devoir</h1>
+      <p th:text="${h.subject.name} + ' · ' + ${h.schoolClass.label}">Matière · Classe</p>
+    </div>
+  </section>
+  <div class="card">
+    <p><b>À rendre :</b>
+      <span th:text="${h.dueDate != null} ? ${#temporals.format(h.dueDate, 'dd/MM/yyyy')} : '—'">Date</span>
+    </p>
+    <h2>Consignes</h2>
+    <p class="msg-body" th:text="${h.instructions != null} ? ${h.instructions} : 'Aucune consigne supplémentaire.'">Consignes</p>
+    <div class="actions">
+      <a class="btn ghost" th:href="@{/homework}">Retour aux devoirs</a>
+      <a class="btn sky" sec:authorize="hasAnyRole('ADMIN','TEACHER')"
+         th:href="@{/homework/{id}/edit(id=${h.id})}">✏️ Modifier</a>
+    </div>
+  </div>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

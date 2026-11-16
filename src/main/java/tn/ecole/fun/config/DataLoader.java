@@ -26,6 +26,8 @@ public class DataLoader implements CommandLineRunner {
     private final SubjectRepository subjects;
     private final StudentRepository students;
     private final GradeRepository grades;
+    private final HomeworkRepository homeworks;
+    private final AssessmentRepository assessments;
     private final PaymentService payments;
     private final PasswordEncoder encoder;
 
@@ -38,6 +40,7 @@ public class DataLoader implements CommandLineRunner {
 
     public DataLoader(SchoolRepository schools, AppUserRepository users, SchoolClassRepository classes,
                       SubjectRepository subjects, StudentRepository students, GradeRepository grades,
+                      HomeworkRepository homeworks, AssessmentRepository assessments,
                       PaymentService payments, PasswordEncoder encoder) {
         this.schools = schools;
         this.users = users;
@@ -45,6 +48,8 @@ public class DataLoader implements CommandLineRunner {
         this.subjects = subjects;
         this.students = students;
         this.grades = grades;
+        this.homeworks = homeworks;
+        this.assessments = assessments;
         this.payments = payments;
         this.encoder = encoder;
     }
@@ -91,6 +96,9 @@ public class DataLoader implements CommandLineRunner {
         grade(school, yassine, english, "Vocabulaire", 16);
         grade(school, lina, maths, "Les nombres", 12);
         grade(school, lina, french, "Les lettres", 13.5);
+        homework(school, ce1, maths, teacher, "A-Devoir 1", "Réviser les nombres.", LocalDate.now().plusDays(2));
+        assessment(school, ce1, maths, teacher, "A-Contrôle 1", AssessmentType.CONTROLE,
+            LocalDate.now().plusDays(3));
 
         pay(yassine, "400", accountant);
     }
@@ -115,6 +123,9 @@ public class DataLoader implements CommandLineRunner {
         grade(school, sarra, maths, "Contrôle 1", 15);
         grade(school, sarra, french, "Dictée", 18);
         grade(school, omar, maths, "Les nombres", 11);
+        homework(school, ce1, maths, teacher, "B-Devoir 1", "Préparer les opérations.", LocalDate.now().plusDays(2));
+        assessment(school, ce1, french, teacher, "B-Contrôle 1", AssessmentType.CONTROLE,
+            LocalDate.now().plusDays(3));
 
         pay(sarra, "250", accountant);
     }
@@ -186,6 +197,35 @@ public class DataLoader implements CommandLineRunner {
         g.setAnneeScolaire(annee);
         g.setGradedOn(LocalDate.now());
         grades.save(g);
+    }
+
+    private void homework(School school, SchoolClass schoolClass, Subject subject, AppUser teacher,
+                          String title, String instructions, LocalDate dueDate) {
+        Homework homework = new Homework();
+        homework.setSchool(school);
+        homework.setSchoolClass(schoolClass);
+        homework.setSubject(subject);
+        homework.setTeacher(teacher);
+        homework.setTitle(title);
+        homework.setInstructions(instructions);
+        homework.setDueDate(dueDate);
+        homework.setCreatedAt(java.time.LocalDateTime.now());
+        homeworks.save(homework);
+    }
+
+    private void assessment(School school, SchoolClass schoolClass, Subject subject, AppUser teacher,
+                           String title, AssessmentType type, LocalDate date) {
+        Assessment assessment = new Assessment();
+        assessment.setSchool(school);
+        assessment.setSchoolClass(schoolClass);
+        assessment.setSubject(subject);
+        assessment.setTeacher(teacher);
+        assessment.setType(type);
+        assessment.setDate(date);
+        assessment.setStartTime(java.time.LocalTime.of(9, 0));
+        assessment.setRoom("Salle 1");
+        assessment.setNotes(title);
+        assessments.save(assessment);
     }
 
     private void pay(Student st, String amount, AppUser accountant) {

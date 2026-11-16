@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Devoir')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('homework')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1 th:text="${h.id == null} ? '➕ Nouveau devoir' : '✏️ Modifier le devoir'">Devoir</h1>
+
+  <div class="card" th:if="${#lists.isEmpty(classes) or #lists.isEmpty(subjects)}">
+    <p>Aucune classe ou matière disponible pour cette école.</p>
+    <a class="btn ghost" th:href="@{/homework}">Retour aux devoirs</a>
+  </div>
+
+  <div class="card" th:if="${!#lists.isEmpty(classes) and !#lists.isEmpty(subjects)}">
+    <form class="fun" method="post" th:action="@{/homework/save}">
+      <input type="hidden" name="id" th:value="${h.id}">
+      <label>Classe
+        <select name="schoolClassId" required>
+          <option th:each="c : ${classes}" th:value="${c.id}" th:text="${c.label}"
+                  th:selected="${h.schoolClass != null and h.schoolClass.id == c.id}">CE1 A</option>
+        </select>
+      </label>
+      <label>Matière
+        <select name="subjectId" required>
+          <option th:each="s : ${subjects}" th:value="${s.id}" th:text="${s.name}"
+                  th:selected="${h.subject != null and h.subject.id == s.id}">Mathématiques</option>
+        </select>
+      </label>
+      <label>Titre
+        <input type="text" name="title" th:value="${h.title}" required>
+      </label>
+      <label>Consignes
+        <textarea name="instructions" th:text="${h.instructions}"></textarea>
+      </label>
+      <label>Date limite
+        <input type="date" name="dueDate" th:value="${h.dueDate}" required>
+      </label>
+      <div class="actions">
+        <button class="btn" type="submit">💾 Enregistrer</button>
+        <a class="btn ghost" th:href="@{/homework}">Annuler</a>
+      </div>
+    </form>
+  </div>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Calendrier')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('calendar')}"></nav>
+<main class="wrap">
+  <h1>🗓️ Calendrier scolaire</h1>
+
+  <div class="calendar-controls">
+    <div class="actions">
+      <a class="btn ghost" th:href="@{/calendar(month=${previousMonth})}" aria-label="Mois précédent">← Précédent</a>
+      <h2 style="margin:0" th:text="${monthLabel}">novembre 2026</h2>
+      <a class="btn ghost" th:href="@{/calendar(month=${nextMonth})}" aria-label="Mois suivant">Suivant →</a>
+    </div>
+    <form class="calendar-month" method="get" th:action="@{/calendar}">
+      <label for="month">Mois</label>
+      <input id="month" name="month" type="month" th:value="${month}" required>
+      <button class="btn sky" type="submit">Afficher</button>
+    </form>
+  </div>
+
+  <section aria-label="Calendrier mensuel">
+    <div class="calendar-weekdays" aria-hidden="true">
+      <span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span>
+    </div>
+    <div class="calendar-grid">
+      <div class="calendar-week" th:each="week : ${weeks}">
+        <th:block th:each="cell : ${week}">
+          <div class="calendar-day empty" th:if="${cell.date == null}"></div>
+          <div class="calendar-day" th:unless="${cell.date == null}"
+               th:classappend="${cell.selected} ? ' selected' : ''">
+            <a class="calendar-day-link"
+               th:href="@{/calendar(month=${month}, day=${cell.date})}"
+               th:aria-label="'Voir les événements du ' + ${cell.date}"
+               th:text="${cell.day}">1</a>
+            <ul class="calendar-day-events" th:if="${!#lists.isEmpty(cell.events)}">
+              <li class="calendar-event-chip" th:each="event : ${cell.events}"
+                  th:classappend="' ' + ${event.cssClass}"
+                  th:title="${event.type} + ' : ' + ${event.title}"
+                  th:text="${event.type}">Devoir</li>
+            </ul>
+          </div>
+        </th:block>
+      </div>
+    </div>
+  </section>
+
+  <section class="card calendar-details" th:if="${selectedDay != null}">
+    <h2 th:text="'Détails du ' + ${#temporals.format(selectedDay, 'dd/MM/yyyy')}">Détails du jour</h2>
+    <p class="muted" th:if="${#lists.isEmpty(selectedEvents)}">Aucun devoir ou contrôle ce jour-là.</p>
+    <div class="upcoming-list" th:unless="${#lists.isEmpty(selectedEvents)}">
+      <article class="upcoming-item" th:each="event : ${selectedEvents}">
+        <span class="calendar-event-chip" th:classappend="' ' + ${event.cssClass}" th:text="${event.type}">Devoir</span>
+        <b th:text="${event.title}">Titre</b>
+        <span th:text="${event.subject} + ' · ' + ${event.schoolClass}">Matière · Classe</span>
+        <span th:if="${event.startTime != null}" th:text="${#temporals.format(event.startTime, 'HH:mm')}">09:00</span>
+        <span th:if="${event.room != null}" th:text="'Salle ' + ${event.room}">Salle</span>
+        <p class="muted" th:if="${event.details != null and !event.details.isBlank()}" th:text="${event.details}">Détails</p>
+      </article>
+    </div>
+  </section>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

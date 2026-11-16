@@ -122,6 +122,28 @@ a { color: var(--sky); font-weight: 700; }
 .inline { display: inline; margin: 0; }
 .actions { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 
+/* ---------- Calendrier et éléments à venir ---------- */
+.calendar-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 16px; }
+.calendar-month { display: flex; align-items: center; gap: 8px; }
+.calendar-month input { width: auto; }
+.calendar-weekdays, .calendar-week { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 5px; }
+.calendar-weekdays { margin-bottom: 5px; text-align: center; font-weight: 800; }
+.calendar-day { min-width: 0; min-height: 108px; padding: 6px; overflow: hidden; background: #fff; border: 2px solid var(--ink); border-radius: 12px; }
+.calendar-day.empty { background: rgba(255,255,255,.35); border-style: dashed; box-shadow: none; }
+.calendar-day.selected { outline: 4px solid var(--sky); outline-offset: -4px; }
+.calendar-day-link { display: inline-flex; min-width: 26px; min-height: 26px; align-items: center; justify-content: center; color: var(--ink); text-decoration: none; font-weight: 800; }
+.calendar-day-events { display: grid; gap: 3px; margin: 4px 0 0; padding: 0; list-style: none; }
+.calendar-event-chip { display: inline-block; max-width: 100%; padding: 2px 7px; overflow: hidden; border: 2px solid var(--ink); border-radius: 999px; font-size: .78rem; font-weight: 800; text-overflow: ellipsis; white-space: nowrap; }
+.event-homework { background: var(--sun); color: var(--ink); }
+.event-control { background: var(--sky); color: #fff; }
+.event-devoir-surveille { background: var(--coral); color: #fff; }
+.event-examen { background: var(--grape); color: #fff; }
+.event-oral { background: var(--mint); color: var(--ink); }
+.calendar-details { margin-top: 20px; }
+.upcoming-list { display: grid; gap: 8px; margin-top: 14px; }
+.upcoming-item { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 8px 0; border-top: 1px solid rgba(43,45,66,.2); }
+.upcoming-date { min-width: 72px; font-weight: 800; }
+
 /* ---------- Tableaux ---------- */
 table { width: 100%; border-collapse: separate; border-spacing: 0 8px; }
 th { text-align: left; font-family: "Baloo 2", sans-serif; padding: 4px 12px; }
@@ -228,4 +250,10 @@ textarea { min-height: 160px; resize: vertical; }
   .hero { flex-direction: column; text-align: center; }
   .wrap { padding: 16px 10px 50px; }
   td, th { padding: 8px 6px; font-size: .92rem; }
+  .calendar-weekdays, .calendar-week { gap: 2px; }
+  .calendar-day { min-height: 72px; padding: 2px; border-width: 1px; border-radius: 7px; }
+  .calendar-day-link { min-width: 22px; min-height: 22px; font-size: .8rem; }
+  .calendar-day-events { gap: 2px; margin-top: 2px; }
+  .calendar-event-chip { width: 100%; padding: 1px 3px; border-width: 1px; border-radius: 6px; font-size: .62rem; }
+  .upcoming-item { gap: 5px; }
 }

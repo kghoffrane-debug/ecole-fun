@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+<head th:replace="~{fragments :: head('Évaluations')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('assessments')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1>📝 Évaluations</h1>
+  <p sec:authorize="hasAnyRole('ADMIN','TEACHER')">
+    <a class="btn coral" th:href="@{/assessments/new}">➕ Nouvelle évaluation</a>
+  </p>
+
+  <table>
+    <thead><tr><th>Date</th><th>Heure</th><th>Classe</th><th>Matière</th><th>Type</th><th>Salle</th><th>Notes</th><th></th></tr></thead>
+    <tbody>
+    <tr th:each="a : ${assessments}">
+      <td th:text="${#temporals.format(a.date, 'dd/MM/yyyy')}">01/01/2026</td>
+      <td th:text="${a.startTime != null} ? ${#temporals.format(a.startTime, 'HH:mm')} : '—'">09:00</td>
+      <td th:text="${a.schoolClass.label}">CE1 A</td>
+      <td th:text="${a.subject.name}">Mathématiques</td>
+      <td th:text="${a.type.label}">Contrôle</td>
+      <td th:text="${a.room != null} ? ${a.room} : '—'">—</td>
+      <td th:text="${a.notes}">Notes</td>
+      <td sec:authorize="hasAnyRole('ADMIN','TEACHER')">
+        <div class="actions">
+          <a class="btn small sky" th:href="@{/assessments/{id}/edit(id=${a.id})}">✏️</a>
+          <form class="inline" method="post" th:action="@{/assessments/{id}/delete(id=${a.id})}"
+                onsubmit="return confirm('Supprimer cette évaluation ?')">
+            <button class="btn small coral" type="submit">🗑️</button>
+          </form>
+        </div>
+      </td>
+      <td sec:authorize="hasAnyRole('STUDENT','PARENT')"></td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(assessments)}"><td colspan="8" class="muted">Aucune évaluation pour cette école.</td></tr>
+    </tbody>
+  </table>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

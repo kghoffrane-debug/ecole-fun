@@ -27,6 +27,12 @@
        th:classappend="${active == 'subjects'} ? 'on'" class="c-mint">📚 Matières</a>
     <a sec:authorize="hasAnyRole('ADMIN','TEACHER')" th:href="@{/grades}"
        th:classappend="${active == 'grades'} ? 'on'" class="c-grape">📝 Notes</a>
+    <a sec:authorize="hasAnyRole('ADMIN','TEACHER','STUDENT','PARENT')" th:href="@{/homework}"
+       th:classappend="${active == 'homework'} ? 'on'" class="c-sun">📚 Devoirs</a>
+    <a sec:authorize="hasAnyRole('ADMIN','TEACHER','STUDENT','PARENT')" th:href="@{/assessments}"
+       th:classappend="${active == 'assessments'} ? 'on'" class="c-coral">📝 Contrôles</a>
+    <a sec:authorize="hasAnyRole('ADMIN','TEACHER','STUDENT','PARENT')" th:href="@{/calendar}"
+       th:classappend="${active == 'calendar'} ? 'on'" class="c-mint">🗓️ Calendrier</a>
     <a sec:authorize="hasAnyRole('ADMIN','ACCOUNTANT')" th:href="@{/payments}"
        th:classappend="${active == 'payments'} ? 'on'" class="c-sun">💰 Paiements</a>
     <a sec:authorize="hasRole('ADMIN')" th:href="@{/users}"

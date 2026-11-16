@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" lang="fr">
+<head th:replace="~{fragments :: head('Devoirs')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('homework')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1>📚 Devoirs</h1>
+  <p sec:authorize="hasAnyRole('ADMIN','TEACHER')">
+    <a class="btn sun" th:href="@{/homework/new}">➕ Nouveau devoir</a>
+  </p>
+
+  <table>
+    <thead><tr><th>À rendre</th><th>Classe</th><th>Matière</th><th>Devoir</th><th>Consignes</th><th></th></tr></thead>
+    <tbody>
+    <tr th:each="h : ${homeworks}">
+      <td th:text="${h.dueDate != null} ? ${#temporals.format(h.dueDate, 'dd/MM/yyyy')} : '—'">01/01/2026</td>
+      <td th:text="${h.schoolClass.label}">CE1 A</td>
+      <td th:text="${h.subject.name}">Mathématiques</td>
+      <td><b th:text="${h.title}">Titre</b></td>
+      <td th:text="${h.instructions}">Consignes</td>
+      <td sec:authorize="hasAnyRole('ADMIN','TEACHER')">
+        <div class="actions">
+          <a class="btn small sky" th:href="@{/homework/{id}/edit(id=${h.id})}">✏️</a>
+          <form class="inline" method="post" th:action="@{/homework/{id}/delete(id=${h.id})}"
+                onsubmit="return confirm('Supprimer ce devoir ?')">
+            <button class="btn small coral" type="submit">🗑️</button>
+          </form>
+        </div>
+      </td>
+      <td sec:authorize="hasAnyRole('STUDENT','PARENT')"></td>
+    </tr>
+    <tr th:if="${#lists.isEmpty(homeworks)}"><td colspan="6" class="muted">Aucun devoir pour cette école.</td></tr>
+    </tbody>
+  </table>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

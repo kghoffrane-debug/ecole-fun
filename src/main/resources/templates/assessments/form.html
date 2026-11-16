@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head th:replace="~{fragments :: head('Évaluation')}"></head>
+<body>
+<nav th:replace="~{fragments :: nav('assessments')}"></nav>
+<main class="wrap">
+  <div th:replace="~{fragments :: flash}"></div>
+  <h1 th:text="${a.id == null} ? '➕ Nouvelle évaluation' : '✏️ Modifier l\'évaluation'">Évaluation</h1>
+
+  <div class="card" th:if="${#lists.isEmpty(classes) or #lists.isEmpty(subjects)}">
+    <p>Aucune classe ou matière disponible pour cette école.</p>
+    <a class="btn ghost" th:href="@{/assessments}">Retour aux évaluations</a>
+  </div>
+
+  <div class="card" th:if="${!#lists.isEmpty(classes) and !#lists.isEmpty(subjects)}">
+    <form class="fun" method="post" th:action="@{/assessments/save}">
+      <input type="hidden" name="id" th:value="${a.id}">
+      <label>Classe
+        <select name="schoolClassId" required>
+          <option th:each="c : ${classes}" th:value="${c.id}" th:text="${c.label}"
+                  th:selected="${a.schoolClass != null and a.schoolClass.id == c.id}">CE1 A</option>
+        </select>
+      </label>
+      <label>Matière
+        <select name="subjectId" required>
+          <option th:each="s : ${subjects}" th:value="${s.id}" th:text="${s.name}"
+                  th:selected="${a.subject != null and a.subject.id == s.id}">Mathématiques</option>
+        </select>
+      </label>
+      <label>Type
+        <select name="type" required>
+          <option th:each="type : ${types}" th:value="${type}" th:text="${type.label}"
+                  th:selected="${type == a.type}">Contrôle</option>
+        </select>
+      </label>
+      <label>Date
+        <input type="date" name="date" th:value="${a.date}" required>
+      </label>
+      <label>Heure (facultative)
+        <input type="time" name="startTime" th:value="${a.startTime}">
+      </label>
+      <label>Salle (facultative)
+        <input type="text" name="room" th:value="${a.room}">
+      </label>
+      <label>Notes (facultatives)
+        <textarea name="notes" th:text="${a.notes}"></textarea>
+      </label>
+      <div class="actions">
+        <button class="btn" type="submit">💾 Enregistrer</button>
+        <a class="btn ghost" th:href="@{/assessments}">Annuler</a>
+      </div>
+    </form>
+  </div>
+</main>
+<script th:src="@{/js/fun.js}"></script>
+</body>
+</html>

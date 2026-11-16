@@ -12,7 +12,4 @@ public interface SubjectRepository extends JpaRepository<Subject, Long> {
     List<Subject> findBySchoolAndDeletedFalseOrderByNameAsc(School school);
 
     Optional<Subject> findByIdAndSchoolAndDeletedFalse(Long id, School school);
-
-    // ANCIENNE : à supprimer à la fin de B.4
-    List<Subject> findByDeletedFalseOrderByNameAsc();
 }

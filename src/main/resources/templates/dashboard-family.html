@@ -19,6 +19,23 @@
     <p>Aucun élève n'est encore rattaché à ce compte. Contactez l'administration 🏫</p>
   </div>
 
+  <section class="card">
+    <div class="actions" style="justify-content:space-between">
+      <h2 style="margin:0">À venir cette semaine</h2>
+      <a class="btn small sky" th:href="@{/calendar}">🗓️ Calendrier</a>
+    </div>
+    <div class="upcoming-list" th:if="${!#lists.isEmpty(upcoming)}">
+      <div class="upcoming-item" th:each="item : ${upcoming}">
+        <span class="upcoming-date" th:text="${#temporals.format(item.date, 'EEE dd/MM')}">Lun 16/11</span>
+        <span class="calendar-event-chip" th:classappend="' ' + ${item.cssClass}" th:text="${item.type}">Devoir</span>
+        <b th:text="${item.title}">Titre</b>
+        <span th:text="${item.subject} + ' · ' + ${item.schoolClass}">Matière · Classe</span>
+        <span class="muted" th:if="${item.time != null}" th:text="${#temporals.format(item.time, 'HH:mm')}">09:00</span>
+      </div>
+    </div>
+    <p class="muted" th:if="${#lists.isEmpty(upcoming)}">Rien de prévu pour le reste de la semaine.</p>
+  </section>
+
   <section class="grid cols2">
     <article class="card child-card" th:each="c : ${cards}">
       <span class="avatar" th:text="${c.student.avatar}">🦊</span>
